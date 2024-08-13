@@ -1,97 +1,62 @@
 package io.github.dayanearnaud.client_service_javer_bank.controllers;
 
+import io.github.dayanearnaud.client_service_javer_bank.clients.CustomerServiceClient;
 import io.github.dayanearnaud.client_service_javer_bank.model.CustomerDTO;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
 
-    private final RestTemplate restTemplate;
-    private final String baseUrl = "http://api-da-app2";
+    private final CustomerServiceClient customerServiceClient;
 
     @Autowired
-    public CustomerController(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public CustomerController(CustomerServiceClient customerServiceClient) {
+        this.customerServiceClient = customerServiceClient;
     }
 
-    @PostMapping("/")
+    @PostMapping("/customers")
     public ResponseEntity<?> create(@RequestBody CustomerDTO customerDTO) {
-        try {
-            String url = baseUrl + "/customers/";
-            ResponseEntity<?> response = restTemplate.postForEntity(url, customerDTO, CustomerController.class);
-            return ResponseEntity.ok(response.getBody());
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        CustomerDTO createdCustomer = customerServiceClient.createCustomer(customerDTO);
+        return ResponseEntity.ok(createdCustomer);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/customers/{id}")
     public ResponseEntity<?> findById(@PathVariable String id) {
-        try {
-            UUID uuid = UUID.fromString(id);
-            String url = baseUrl + "/customers/" + uuid.toString();
-            ResponseEntity<CustomerDTO> response = restTemplate.getForEntity(url, CustomerDTO.class);
-            return ResponseEntity.ok(response.getBody());
-        } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body("Invalid UUID format:" + e.getMessage());
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        UUID uuid = UUID.fromString(id);
+        CustomerDTO customer = customerServiceClient.getCustomerById(uuid);
+        return ResponseEntity.ok(customer);
     }
 
-    @GetMapping("/")
+    @GetMapping("/customers")
     public ResponseEntity<?> findAll() {
-        String url = baseUrl + "/customers/";
-        ResponseEntity<?> response = restTemplate.getForEntity(url, CustomerDTO[].class);
-        return ResponseEntity.ok(response.getBody());
+        List<CustomerDTO> customers = customerServiceClient.getAllCustomers();
+        return ResponseEntity.ok(customers);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/customers/{id}")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody CustomerDTO customerDTO) {
-        try{
             UUID uuid = UUID.fromString(id);
-            String url = baseUrl + "/customers/" + uuid.toString();
-            restTemplate.put(url, customerDTO);
+            customerServiceClient.updateCustomer(uuid, customerDTO);
             return ResponseEntity.ok("Customer updated successfully.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid UUID format:" + e.getMessage());
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/customers/{id}")
     public ResponseEntity<?> deleteById(@PathVariable String id) {
-        try{
             UUID uuid = UUID.fromString(id);
-            String url = baseUrl + "/customers/" + uuid.toString();
-            restTemplate.delete(url);
+            customerServiceClient.deleteCustomer(uuid);
             return ResponseEntity.ok("Customer deleted successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid UUID format:" + e.getMessage());
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
 
-    @GetMapping("/calculate-score/{id}")
+    @GetMapping("/customers/calculate-score/{id}")
     public ResponseEntity<?> calculateScore(@PathVariable String id) {
-        try{
             UUID uuid = UUID.fromString(id);
-            String url = baseUrl + "/customers/calculate-score" + uuid.toString();
-            ResponseEntity<Double> response = restTemplate.getForEntity(url, Double.class);
-            return ResponseEntity.ok(response.getBody());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid UUID format:" + e.getMessage());
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            Double score = customerServiceClient.calculateCreditScore(uuid);
+            return ResponseEntity.ok(score);
     }
 }
