@@ -1,4 +1,4 @@
-package io.github.dayanearnaud.manager_service_javer_bank.exceptions;
+package io.github.dayanearnaud.client_service_javer_bank.exceptions;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException() {
