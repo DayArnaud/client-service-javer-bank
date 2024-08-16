@@ -11,9 +11,9 @@ public class CustomerDTO {
     private String name;
     private Long phone;
     private String email;
-    private Boolean accountHolder;
-    private String accountNumber;
+    private Boolean account_holder;
+    private String account_number;
     private Double balance;
-    private Double creditScore;
-    private LocalDateTime createdAt;
+    private Double credit_score;
+    private LocalDateTime created_at;
 }

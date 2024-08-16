@@ -7,20 +7,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(name = "CustomerService", url = "http.beanstalk")
+@FeignClient(name = "CustomerService", url = "http://Novo-deploy-env.eba-tni9kurn.us-east-1.elasticbeanstalk.com")
 public interface CustomerServiceClient {
 
-    @PostMapping("/customers")
+    @PostMapping("/customers/")
     CustomerDTO createCustomer(@RequestBody CustomerDTO customerDTO);
 
     @GetMapping("/customers/{id}")
     CustomerDTO getCustomerById(@PathVariable("id")UUID id);
 
-    @GetMapping("/customers")
+    @GetMapping("/customers/")
     List<CustomerDTO> getAllCustomers();
 
     @PutMapping("/customers/{id}")
-    void updateCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customerDTO);
+    CustomerDTO updateCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customerDTO);
 
     @DeleteMapping("/customers/{id}")
     void deleteCustomer(@PathVariable("id") UUID id);
