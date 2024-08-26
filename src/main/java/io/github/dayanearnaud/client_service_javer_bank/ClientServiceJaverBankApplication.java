@@ -20,5 +20,4 @@ public class ClientServiceJaverBankApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ClientServiceJaverBankApplication.class, args);
 	}
-
 }

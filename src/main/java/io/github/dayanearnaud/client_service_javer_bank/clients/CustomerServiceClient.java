@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(name = "CustomerService", url = "http://Novo-deploy-env.eba-tni9kurn.us-east-1.elasticbeanstalk.com")
+@FeignClient(name = "CustomerService", url = "http://manager-deploy-env.eba-w9ims9yz.us-east-1.elasticbeanstalk.com")
 public interface CustomerServiceClient {
 
     @PostMapping("/customers/")
